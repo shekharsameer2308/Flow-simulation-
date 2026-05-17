@@ -86,29 +86,32 @@ The framework follows a modular scientific-computing architecture designed for s
 
 # High-Level Architecture
 
-```text
-+------------------------------------------------------+
-|                Research Visualization Layer          |
-+------------------------------------------------------+
-|              Scientific Dashboard Engine             |
-+------------------------------------------------------+
-|            Machine Learning Surrogate Layer          |
-+------------------------------------------------------+
-|         LES Turbulence and Tensor Analysis           |
-+------------------------------------------------------+
-|            CFD Solver and Physics Engine             |
-+------------------------------------------------------+
-|              GPU Parallel Compute Layer              |
-+------------------------------------------------------+
-|                 CUDA / Taichi Backend                |
-+------------------------------------------------------+
+```mermaid
+graph TD
+    A["Research Visualization Layer"]
+    B["Scientific Dashboard Engine"]
+    C["Machine Learning Surrogate Layer"]
+    D["LES Turbulence and Tensor Analysis"]
+    E["CFD Solver and Physics Engine"]
+    F["GPU Parallel Compute Layer"]
+    G["CUDA / Taichi Backend"]
+
+    A --> B --> C --> D --> E --> F --> G
+
+    style A fill:#1a1a2e,stroke:#e94560,color:#fff
+    style B fill:#16213e,stroke:#0f3460,color:#fff
+    style C fill:#0f3460,stroke:#533483,color:#fff
+    style D fill:#533483,stroke:#e94560,color:#fff
+    style E fill:#1a1a2e,stroke:#e94560,color:#fff
+    style F fill:#16213e,stroke:#0f3460,color:#fff
+    style G fill:#0f3460,stroke:#533483,color:#fff
 ```
 
 ---
 
 # CFD Solver Architecture
 
-The CFD engine is based on a pressure-projection formulation of the incompressible Navier–Stokes equations.
+The CFD engine is based on a pressure-projection formulation of the incompressible Navier-Stokes equations.
 
 The simulation pipeline is decomposed into several GPU-parallel computational stages.
 
@@ -116,36 +119,31 @@ The simulation pipeline is decomposed into several GPU-parallel computational st
 
 # Simulation Pipeline
 
-```text
-Initialize Simulation Domain
-            ↓
-Generate Vehicle Geometry
-            ↓
-Apply Boundary Conditions
-            ↓
-Inject Velocity and Density
-            ↓
-Velocity Advection
-            ↓
-Density Advection
-            ↓
-Compute Divergence
-            ↓
-Pressure Poisson Solve
-            ↓
-Velocity Projection
-            ↓
-Compute Vorticity
-            ↓
-LES Turbulence Modeling
-            ↓
-Tensor Field Extraction
-            ↓
-Scientific Visualization
-            ↓
-Machine Learning Training
-            ↓
-Media and Dashboard Export
+```mermaid
+flowchart TD
+    A([Initialize Simulation Domain])
+    B([Generate Vehicle Geometry])
+    C([Apply Boundary Conditions])
+    D([Inject Velocity and Density])
+    E([Velocity Advection])
+    F([Density Advection])
+    G([Compute Divergence])
+    H([Pressure Poisson Solve])
+    I([Velocity Projection])
+    J([Compute Vorticity])
+    K([LES Turbulence Modeling])
+    L([Tensor Field Extraction])
+    M([Scientific Visualization])
+    N([Machine Learning Training])
+    O([Media and Dashboard Export])
+
+    A --> B --> C --> D --> E --> F --> G --> H --> I --> J --> K --> L --> M --> N --> O
+
+    style A fill:#0f3460,stroke:#e94560,color:#fff
+    style H fill:#533483,stroke:#e94560,color:#fff
+    style K fill:#533483,stroke:#e94560,color:#fff
+    style N fill:#0f3460,stroke:#e94560,color:#fff
+    style O fill:#1a1a2e,stroke:#e94560,color:#fff
 ```
 
 ---
@@ -154,31 +152,25 @@ Media and Dashboard Export
 
 ## Governing Equations
 
-### Incompressible Navier–Stokes Equations
+### Incompressible Navier-Stokes Equations
 
-\[
-\frac{\partial \mathbf{u}}{\partial t}
-+
-(\mathbf{u}\cdot\nabla)\mathbf{u}
-=
--\nabla p
-+
-\nu\nabla^2\mathbf{u}
-\]
+$$
+\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla)\mathbf{u} = -\nabla p + \nu \nabla^2 \mathbf{u}
+$$
 
 Where:
 
-- \( \mathbf{u} \) represents the velocity field
-- \( p \) represents the pressure field
-- \( \nu \) represents the kinematic viscosity
+- $\mathbf{u}$ — velocity field
+- $p$ — pressure field
+- $\nu$ — kinematic viscosity
 
 ---
 
 ### Continuity Equation
 
-\[
+$$
 \nabla \cdot \mathbf{u} = 0
-\]
+$$
 
 The pressure-projection stage enforces incompressibility by removing divergence from the velocity field.
 
@@ -186,9 +178,9 @@ The pressure-projection stage enforces incompressibility by removing divergence 
 
 ### Pressure Poisson Equation
 
-\[
+$$
 \nabla^2 p = \nabla \cdot \mathbf{u}
-\]
+$$
 
 The pressure field is solved iteratively using a GPU-accelerated Jacobi solver.
 
@@ -231,18 +223,20 @@ The projection stage removes divergence from the velocity field.
 
 ### Projection Pipeline
 
-```text
-Velocity Field
-      ↓
-Compute Divergence
-      ↓
-Solve Pressure Equation
-      ↓
-Compute Pressure Gradient
-      ↓
-Project Velocity
-      ↓
-Divergence-Free Flow
+```mermaid
+flowchart TD
+    A([Velocity Field])
+    B([Compute Divergence])
+    C([Solve Pressure Equation])
+    D([Compute Pressure Gradient])
+    E([Project Velocity])
+    F([Divergence-Free Flow])
+
+    A --> B --> C --> D --> E --> F
+
+    style A fill:#0f3460,stroke:#e94560,color:#fff
+    style C fill:#533483,stroke:#e94560,color:#fff
+    style F fill:#1a1a2e,stroke:#00c896,color:#fff
 ```
 
 ---
@@ -269,14 +263,19 @@ The framework integrates Large Eddy Simulation (LES) for sub-grid turbulence app
 
 # LES Pipeline
 
-```text
-Velocity Gradients
-        ↓
-Strain Tensor Computation
-        ↓
-Eddy Viscosity Estimation
-        ↓
-Sub-Grid Turbulence Approximation
+```mermaid
+flowchart TD
+    A([Velocity Gradients])
+    B([Strain Tensor Computation])
+    C([Eddy Viscosity Estimation])
+    D([Sub-Grid Turbulence Approximation])
+
+    A --> B --> C --> D
+
+    style A fill:#0f3460,stroke:#e94560,color:#fff
+    style B fill:#16213e,stroke:#533483,color:#fff
+    style C fill:#533483,stroke:#e94560,color:#fff
+    style D fill:#1a1a2e,stroke:#00c896,color:#fff
 ```
 
 ---
@@ -285,14 +284,15 @@ Sub-Grid Turbulence Approximation
 
 The eddy viscosity is computed using:
 
-\[
-\nu_t = (C_s \Delta)^2 \sqrt{2S_{ij}S_{ij}}
-\]
+$$
+\nu_t = (C_s \Delta)^2 \sqrt{2 S_{ij} S_{ij}}
+$$
 
 Where:
-- \( \nu_t \) = eddy viscosity
-- \( C_s \) = Smagorinsky constant
-- \( S_{ij} \) = strain-rate tensor
+- $\nu_t$ — eddy viscosity
+- $C_s$ — Smagorinsky constant
+- $\Delta$ — filter width (grid scale)
+- $S_{ij}$ — strain-rate tensor
 
 ---
 
@@ -320,9 +320,9 @@ The framework computes several tensor-based fluid quantities.
 
 The framework computes rotational flow structures using:
 
-\[
-\omega = \nabla \times \mathbf{u}
-\]
+$$
+\boldsymbol{\omega} = \nabla \times \mathbf{u}
+$$
 
 Used for:
 - wake analysis
@@ -351,16 +351,21 @@ The entire CFD workflow is optimized for CUDA-enabled GPU execution.
 
 # GPU Architecture
 
-```text
-Python Layer
-      ↓
-Taichi GPU Kernels
-      ↓
-CUDA Tensor Operations
-      ↓
-Parallel CFD Computation
-      ↓
-Tensor Field Processing
+```mermaid
+flowchart TD
+    A([Python Layer])
+    B([Taichi GPU Kernels])
+    C([CUDA Tensor Operations])
+    D([Parallel CFD Computation])
+    E([Tensor Field Processing])
+
+    A --> B --> C --> D --> E
+
+    style A fill:#0f3460,stroke:#e94560,color:#fff
+    style B fill:#16213e,stroke:#e94560,color:#fff
+    style C fill:#533483,stroke:#00c896,color:#fff
+    style D fill:#1a1a2e,stroke:#e94560,color:#fff
+    style E fill:#0f3460,stroke:#00c896,color:#fff
 ```
 
 ---
@@ -399,22 +404,24 @@ This enables:
 
 # CFD-to-ML Pipeline
 
-```text
-CFD Simulation
-      ↓
-Field Extraction
-      ↓
-Tensor Normalization
-      ↓
-Multi-Channel Encoding
-      ↓
-CNN Encoder
-      ↓
-Latent Representation
-      ↓
-CNN Decoder
-      ↓
-Pressure Prediction
+```mermaid
+flowchart TD
+    A([CFD Simulation])
+    B([Field Extraction])
+    C([Tensor Normalization])
+    D([Multi-Channel Encoding])
+    E([CNN Encoder])
+    F([Latent Representation])
+    G([CNN Decoder])
+    H([Pressure Prediction])
+
+    A --> B --> C --> D --> E --> F --> G --> H
+
+    style A fill:#0f3460,stroke:#e94560,color:#fff
+    style E fill:#533483,stroke:#e94560,color:#fff
+    style F fill:#1a1a2e,stroke:#00c896,color:#fff
+    style G fill:#533483,stroke:#e94560,color:#fff
+    style H fill:#16213e,stroke:#00c896,color:#fff
 ```
 
 ---
@@ -529,28 +536,28 @@ The framework automatically exports:
 
 ```text
 project/
-│
-├── main.py
-├── notebook.ipynb
-├── requirements.txt
-├── README.md
-│
-├── outputs/
-│   ├── advanced_cfd.gif
-│   ├── final_cfd_video.mp4
-│   ├── cfd_dashboard.png
-│   ├── cfd_research_dashboard.png
-│   ├── cfd_ml_results.png
-│   ├── streamlines.png
-│   ├── pressure_field.png
-│   ├── vorticity_field.png
-│   ├── vector_field.png
-│   ├── particle_flow.png
-│   ├── vortex_flow_field.png
-│   └── cfd_report.txt
-│
-└── models/
-    └── CFDNet
+|
+|-- main.py
+|-- notebook.ipynb
+|-- requirements.txt
+|-- README.md
+|
+|-- outputs/
+|   |-- advanced_cfd.gif
+|   |-- final_cfd_video.mp4
+|   |-- cfd_dashboard.png
+|   |-- cfd_research_dashboard.png
+|   |-- cfd_ml_results.png
+|   |-- streamlines.png
+|   |-- pressure_field.png
+|   |-- vorticity_field.png
+|   |-- vector_field.png
+|   |-- particle_flow.png
+|   |-- vortex_flow_field.png
+|   `-- cfd_report.txt
+|
+`-- models/
+    `-- CFDNet
 ```
 
 ---
@@ -561,7 +568,6 @@ project/
 
 ```bash
 git clone https://github.com/yourusername/gpu-cfd-les-framework.git
-
 cd gpu-cfd-les-framework
 ```
 
@@ -662,7 +668,7 @@ This framework is suitable for:
 
 Potential future upgrades include:
 
-- full 3D Navier–Stokes simulation
+- full 3D Navier-Stokes simulation
 - adaptive mesh refinement
 - Fourier Neural Operators
 - Physics-Informed Neural Networks (PINNs)
